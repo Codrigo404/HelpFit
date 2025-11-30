@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Fitness Completa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./CSS/INDEX.CSS"> 
+</head>
+<body class="p-4 md:p-8">
+    
+
+    <div class="max-w-4xl mx-auto bg-white p-6 md:p-10 rounded-xl card-shadow flex flex-col">
+        <h1 class="text-3xl md:text-4xl font-extrabold text-blue-800 mb-2 no-print">Calculadora Fitness Completa</h1>
+        <p class="text-gray-600 mb-8 no-print text-sm md:text-base">Calcule seus macros, hidratação e otimize sua corrida para perda de gordura.</p>
+
+        <div class="mb-10 p-6 bg-red-50 rounded-lg border-2 border-dashed border-red-300">
+            <h2 class="text-2xl font-semibold text-red-700 mb-4 border-b pb-2">🏃 Calculadora de Corrida (Queima de Gordura)</h2>
+            <form id="runCalculatorForm" class="grid grid-cols-1 md:grid-cols-2 gap-6 no-print">
+                
+                <div>
+                    <label for="run_age" class="block text-sm font-medium text-gray-700 mb-1">Sua Idade (anos)</label>
+                    <input type="number" id="run_age" required min="10" max="100" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500 transition duration-150 ease-in-out">
+                </div>
+                
+                <div>
+                    <label for="run_weight" class="block text-sm font-medium text-gray-700 mb-1">Seu Peso (kg)</label>
+                    <input type="number" id="run_weight" required min="20" max="500" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500 transition duration-150 ease-in-out">
+                </div>
+                
+                <div>
+                    <label for="fat_goal_cals" class="block text-sm font-medium text-gray-700 mb-1">Meta de Gordura a Queimar (Kcal)</label>
+                    <input type="number" id="fat_goal_cals" required min="100" max="1000" value="300" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500 transition duration-150 ease-in-out">
+                    <p class="text-xs text-gray-500 mt-1">*Aprox. 770 kcal equivalem a 100g de gordura corporal pura.</p>
+                </div>
+
+                <div>
+                    <label for="heart_rate_zone" class="block text-sm font-medium text-gray-700 mb-1">Zona de Esforço da Corrida</label>
+                    <select id="heart_rate_zone" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500 transition duration-150 ease-in-out">
+                        <option value="0.60">Leve (50-60% da FCM)</option>
+                        <option value="0.70" selected>Moderada (60-70% da FCM - Zona de Queima Ideal)</option>
+                        <option value="0.50">Intensa (70-80% da FCM)</option>
+                    </select>
+                </div>
+                
+                <div class="col-span-1 md:col-span-2">
+                    <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 ease-in-out shadow-md hover:shadow-lg">
+                        Calcular Distância para Perder Gordura
+                    </button>
+                </div>
+            </form>
+
+            <div id="run_results" class="mt-6 p-4 bg-white rounded-lg border border-red-400 hidden">
+                <p class="text-lg font-semibold text-gray-800 mb-1">Distância Diária Necessária:</p>
+                <p class="text-4xl font-extrabold text-red-700"><span id="distanceDisplay">--</span> km</p>
+                
+                <div class="mt-3 pt-3 border-t border-gray-200">
+                    <p class="text-md font-semibold text-gray-700">Proporção Média de Queima:</p>
+                    <p class="text-xl font-bold text-green-600">
+                        <span id="calsPerKmDisplay">--</span> kcal / km (Total)
+                    </p>
+                </div>
+
+                <p class="text-sm text-gray-600 mt-2">
+                    FCM Estimada (<span id="fcmDisplay">--</span> bpm). Corra na Zona Ideal de Queima de Gordura: 
+                    <span id="fatBurnZoneDisplay" class="font-bold text-red-600">-- bpm</span>.
+                </p>
+            </div>
+        </div>
+
+        <div class="mb-10 p-6 bg-blue-50 rounded-lg border-2 border-dashed border-blue-300">
+            <h2 class="text-2xl font-semibold text-blue-700 mb-4 border-b pb-2">💧 Calculadora de Água Diária</h2>
+            <form id="waterCalculatorForm" class="grid grid-cols-1 md:grid-cols-2 gap-6 no-print">
+                <div>
+                    <label for="water_weight" class="block text-sm font-medium text-gray-700 mb-1">Seu Peso (kg)</label>
+                    <input type="number" id="water_weight" required min="20" max="500" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                </div>
+
+                <div>
+                    <label for="water_activity" class="block text-sm font-medium text-gray-700 mb-1">Intensidade do Exercício (Ajuste)</label>
+                    <select id="water_activity" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                        <option value="0" selected>Nenhum / Sedentário (Sem Ajuste)</option>
+                        <option value="350">Leve (30-60 min/dia)</option>
+                        <option value="500">Moderado (60-90 min/dia)</option>
+                        <option value="750">Intenso (Mais de 90 min/dia)</option>
+                    </select>
+                </div>
+                
+                <div class="col-span-1 md:col-span-2">
+                    <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300 ease-in-out shadow-md hover:shadow-lg">
+                        Calcular Necessidade de Água
+                    </button>
+                </div>
+            </form>
+
+            <div id="water_results" class="mt-6 p-4 bg-white rounded-lg border border-blue-400 hidden">
+                <p class="text-lg font-semibold text-gray-800">Sua meta diária de água é:</p>
+                <p class="text-4xl font-extrabold text-blue-700 mt-1"><span id="waterLitersDisplay">--</span> L</p>
+                <p class="text-sm text-gray-500 mt-2">*Base: 35ml por kg. Ajuste: <span id="waterAdjustmentDisplay">0</span> ml adicionais pela atividade física.</p>
+            </div>
+        </div>
+        
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">🍽️ Calculadora de Macronutrientes</h2>
+        <form id="macroCalculatorForm" class="grid grid-cols-1 md:grid-cols-2 gap-6 no-print">
+
+            <div>
+                <label for="gender" class="block text-sm font-medium text-gray-700 mb-1">Gênero</label>
+                <select id="gender" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                    <option value="" disabled selected>Selecione</option>
+                    <option value="male">Masculino</option>
+                    <option value="female">Feminino</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="age" class="block text-sm font-medium text-gray-700 mb-1">Idade (anos)</label>
+                <input type="number" id="age" required min="10" max="100" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+            </div>
+
+            <div>
+                <label for="height" class="block text-sm font-medium text-gray-700 mb-1">Altura (cm)</label>
+                <input type="number" id="height" required min="50" max="300" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+            </div>
+
+            <div>
+                <label for="weight" class="block text-sm font-medium text-gray-700 mb-1">Peso (kg)</label>
+                <input type="number" id="weight" required min="20" max="500" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+            </div>
+            
+            <div class="col-span-1 md:col-span-2">
+                <label for="activity" class="block text-sm font-medium text-gray-700 mb-1">Nível de Atividade Física (Para Macros)</label>
+                <select id="activity" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                    <option value="" disabled selected>Selecione</option>
+                    <option value="1.2">Sedentário (Pouco ou nenhum exercício)</option>
+                    <option value="1.375">Levemente Ativo (Exercícios leves 1-3 dias/semana)</option>
+                    <option value="1.55">Moderadamente Ativo (Exercícios moderados 3-5 dias/semana)</option>
+                    <option value="1.725">Muito Ativo (Exercícios intensos 6-7 dias/semana)</option>
+                    <option value="1.9">Extremamente Ativo (Exercícios intensos diários + trabalho físico)</option>
+                </select>
+            </div>
+
+            <div class="col-span-1 md:col-span-2">
+                <label for="goal" class="block text-sm font-medium text-gray-700 mb-1">Objetivo Fitness</label>
+                <select id="goal" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                    <option value="" disabled selected>Selecione seu objetivo</option>
+                    <option value="mass">Ganho de Massa Muscular (Superávit)</option>
+                    <option value="maintenance">Manutenção de Peso (Equilíbrio)</option>
+                    <option value="loss">Perda de Peso (Déficit)</option>
+                </select>
+            </div>
+
+            <div class="col-span-1 md:col-span-2">
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 ease-in-out shadow-md hover:shadow-lg">
+                    Calcular Macronutrientes
+                </button>
+            </div>
+        </form>
+
+        <div id="errorMessage" class="mt-6 p-4 bg-red-100 text-red-700 border border-red-400 rounded-lg hidden" role="alert">
+            </div>
+
+        <div id="results" class="mt-10 p-6 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 hidden">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Seus Resultados Diários:</h2>
+
+            <div class="mb-4">
+                <p class="text-md text-gray-600 mb-2">Sua Taxa Metabólica Diária Estimada (TDEE): <span id="tdeeDisplay" class="font-bold text-lg text-green-600">--</span> kcal</p>
+                <p class="text-md text-gray-600">Meta Calórica Diária para o seu Objetivo: <span id="targetCaloriesDisplay" class="font-bold text-xl text-red-700">--</span> kcal</p>
+            </div>
+
+            <div id="macro-distribution-grid" class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center print-grid">
+                
+                <div class="p-4 bg-red-100 rounded-lg border border-red-300">
+                    <p class="text-sm font-medium text-red-700">Proteína</p>
+                    <p id="proteinGrams" class="text-2xl font-extrabold text-red-800">0g</p>
+                    <p id="proteinCals" class="text-sm text-red-600">0 kcal</p>
+                </div>
+
+                <div class="p-4 bg-yellow-100 rounded-lg border border-yellow-300">
+                    <p class="text-sm font-medium text-yellow-700">Carboidrato</p>
+                    <p id="carbGrams" class="text-2xl font-extrabold text-yellow-800">0g</p>
+                    <p id="carbCals" class="text-sm text-yellow-600">0 kcal</p>
+                </div>
+
+                <div class="p-4 bg-green-100 rounded-lg border border-green-300">
+                    <p class="text-sm font-medium text-green-700">Gordura</p>
+                    <p id="fatGrams" class="text-2xl font-extrabold text-green-800">0g</p>
+                    <p id="fatCals" class="text-sm text-green-600">0 kcal</p>
+                </div>
+
+            </div>
+            
+            <div class="mt-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-t pt-4">Exemplo de Plano Alimentar (<span id="mealGoalTitle"></span>)</h2>
+                <div id="dietExamples" class="space-y-4">
+                    </div>
+            </div>
+            
+            <div class="mt-8 no-print">
+                <button onclick="window.print()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 ease-in-out shadow-md hover:shadow-lg flex items-center justify-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2h-2m-4-2H5a2 2 0 00-2 2v4a2 2 0 002 2h4m-4 2v4a2 2 0 002 2h4m-4-2h8m-8 2h8m-8-2v-4m4 4V7m0 0V3"></path></svg>
+                    Imprimir Plano
+                </button>
+            </div>
+
+
+            <p class="mt-6 text-xs text-gray-500">
+                *Estes valores e sugestões são estimativas. Consulte sempre um profissional de saúde ou nutricionista para um plano alimentar personalizado.
+            </p>
+        </div>
+
+    </div>
+    
+    <script src="./JS/INDEX.JS"></script> 
+</body>
+</html>
