@@ -253,7 +253,7 @@
     <script src="./js/whatsap.js"></script>
     <script src="./js/pix.js"></script>
     
- <script>
+<script>
 document.addEventListener("DOMContentLoaded", () => {
     const parametros = new URLSearchParams(window.location.search);
     let temaAtual = parametros.get("tema");
@@ -265,40 +265,56 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (temaAtual === "basic") {
-        const estiloNeutro = document.createElement('style');
-        estiloNeutro.innerHTML = `
-            /* 1. Reset de Fundo do Body */
-            body { background-color: #f1f5f9 !important; background-image: none !important; }
-
-            /* 2. Botões e Elementos de Ação (Substitui Rosa/Roxo por Grafite) */
-            .bg-pink-600, .bg-purple-600, .btn-star, button[type="submit"] { 
-                background-color: #0f172a !important; 
-                background-image: none !important;
-                color: white !important;
-            }
-
-            /* 3. Textos de Título (Substitui Roxo por Chumbo) */
-            .text-purple-600, .text-pink-600, .text-pink-500 { 
-                color: #1e293b !important; 
-            }
-
-            /* 4. Banner de Compra (Transforma em Gradiente Neutro) */
-            #banner_compra { 
-                background: linear-gradient(to right, #1e293b, #334155) !important; 
-            }
-
-            /* 5. Cards e Bordas */
-            .bg-pink-50\\/50 { background-color: #ffffff !important; }
-            .border-pink-100, .border-purple-100 { border-color: #e2e8f0 !important; }
+        // 1. Aplica a Paleta de Cores do Dashboard (Azul Marinho, Verde e Branco)
+        const estiloBioCode = document.createElement('style');
+        estiloBioCode.innerHTML = `
+            /* Fundo principal Azul Profundo */
+            body { background-color: #0f172a !important; color: #ffffff !important; }
             
-            /* 6. Ajuste de links e destaques */
-            a.text-purple-600 { color: #334155 !important; }
-        `;
-        document.head.appendChild(estiloNeutro);
+            /* Cards em Azul Marinho mais claro para contraste */
+            .glass-card { background-color: #1e293b !important; border: 1px solid #334155 !important; color: #f8fafc !important; }
+            
+            /* Títulos e Destaques em Verde Neon BioCode */
+            h1, h2, h3, .text-purple-600, .text-pink-600, .text-pink-500 { color: #22c55e !important; }
+            
+            /* Botões em Verde com texto Branco/Preto */
+            .bg-pink-600, .bg-purple-600, .btn-star, button[type="submit"] { 
+                background-color: #22c55e !important; 
+                color: #064e3b !important;
+                background-image: none !important;
+                font-weight: 800 !important;
+            }
 
-        // Ajuste opcional de texto para o modo neutro
+            /* Banner de Compra seguindo o estilo do Admin */
+            #banner_compra { 
+                background: linear-gradient(to right, #1e3a8a, #1e40af) !important; 
+                border-left: 4px solid #22c55e !important;
+            }
+            
+            /* Inputs adaptados para o tema escuro */
+            input, select { 
+                background-color: #334155 !important; 
+                color: white !important; 
+                border-color: #475569 !important; 
+            }
+        `;
+        document.head.appendChild(estiloBioCode);
+
+        // 2. Troca dos Textos para a Identidade BIOCODE
+        
+        // BIOCODE (Em Branco e Verde como você pediu)
         const subTitle = document.querySelector('h3.text-purple-600');
-        if(subTitle) subTitle.innerText = "Protocolo DreamTech:";
+        if(subTitle) {
+            subTitle.innerHTML = '<span style="color: #ffffff;">BIOCODE</span> <span style="color: #22c55e;">TECNOLOGIA</span>';
+        }
+
+        // Título Principal
+        const mainTitle = document.querySelector('h1');
+        if(mainTitle) mainTitle.innerText = "DREAMTECH A SERVIÇO DA SUA SAÚDE";
+
+        // Texto de boas-vindas
+        const desc = document.querySelector('main p');
+        if(desc) desc.innerText = "Sua jornada de alta performance com a tecnologia da DreamTech e otimização avançada.";
     }
 });
 </script>
