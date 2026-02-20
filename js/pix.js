@@ -13,7 +13,7 @@ if (!window.firebaseAppBioCode) {
     };
     window.firebaseAppBioCode = firebase.initializeApp(firebaseConfigBioCode, "BioCodeApp");
 }
-var dbBioCode = firebase.firestore(window.firebaseAppBioCode);
+var db= firebase.firestore(window.firebaseAppBioCode);
 
 async function irParaPagamento() {
     const urlApi = "https://us-central1-database-biocode.cloudfunctions.net/gerarPixBioCode";
@@ -86,7 +86,7 @@ async function irParaPagamento() {
 
 function monitorarPagamento(cpf, janelaPix) {
     // Escuta em tempo real o documento do pagamento pelo CPF
-    dbBioCode.collection("pagamentos").doc(cpf).onSnapshot((doc) => {
+    db.collection("pagamentos").doc(cpf).onSnapshot((doc) => {
         if (doc.exists) {
             const dados = doc.data();
             console.log("Status atual:", dados.status); // Útil para debugar
