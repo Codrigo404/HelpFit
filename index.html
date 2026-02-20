@@ -253,29 +253,45 @@
     <script src="./js/whatsap.js"></script>
     <script src="./js/pix.js"></script>
     
-    <script>
+ <script>
     document.addEventListener("DOMContentLoaded", () => {
-    // 1. Olha para o link e tenta achar o "?tema="
-    const parametros = new URLSearchParams(window.location.search);
-    let temaAtual = parametros.get("tema");
+        // 1. Olha para o link e tenta achar o "?tema="
+        const parametros = new URLSearchParams(window.location.search);
+        let temaAtual = parametros.get("tema");
 
-    // 2. Se achou na URL, salva no navegador do cliente
-    if (temaAtual) {
-        localStorage.setItem("tema_biocode", temaAtual);
-    } else {
-        // Se não achou na URL, tenta lembrar o que estava salvo (padrão é "star")
-        temaAtual = localStorage.getItem("tema_biocode") || "star";
-    }
+        // 2. Salva no navegador do cliente
+        if (temaAtual) {
+            localStorage.setItem("tema_biocode", temaAtual);
+        } else {
+            temaAtual = localStorage.getItem("tema_biocode") || "star";
+        }
 
-    // 3. Troca a classe do <body> para mudar as cores
-    if (temaAtual === "basic") {
-        document.body.classList.add("tema-neutro");
-        document.body.classList.remove("tema-rosa");
-    } else {
-        document.body.classList.add("tema-rosa");
-        document.body.classList.remove("tema-neutro");
-    }
-});
+        // 3. Se for 'basic', aplica o Modo Neutro (Grafite e Cinza)
+        if (temaAtual === "basic") {
+            const estiloNeutro = document.createElement('style');
+            estiloNeutro.innerHTML = `
+                /* Fundos Neutros */
+                body.bg-pink-50 { background-color: #f8fafc !important; }
+                .bg-pink-50\\/50 { background-color: #f1f5f9 !important; }
+                .bg-pink-600, .bg-purple-600 { background-color: #1e293b !important; }
+                
+                /* Textos Neutros */
+                .text-pink-500, .text-purple-500 { color: #64748b !important; }
+                .text-pink-600, .text-purple-600 { color: #334155 !important; }
+                .text-purple-100 { color: #cbd5e1 !important; }
+                
+                /* Bordas Neutras */
+                .border-pink-100, .border-purple-100 { border-color: #e2e8f0 !important; }
+                
+                /* Gradientes Neutros (Cinza e Chumbo) */
+                .from-pink-500 { --tw-gradient-from: #64748b !important; }
+                .to-purple-600 { --tw-gradient-to: #334155 !important; }
+                .from-purple-600 { --tw-gradient-from: #475569 !important; }
+                .to-indigo-700 { --tw-gradient-to: #0f172a !important; }
+            `;
+            document.head.appendChild(estiloNeutro);
+        }
+    });
     </script>
 
 </body>
