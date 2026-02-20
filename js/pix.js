@@ -85,11 +85,26 @@ async function irParaPagamento() {
 }
 
 function monitorarPagamento(cpf, janelaPix) {
+    // Escuta em tempo real o documento do pagamento pelo CPF
     dbBioCode.collection("pagamentos").doc(cpf).onSnapshot((doc) => {
-        if (doc.exists && doc.data().status === "PAGO") {
-            if (janelaPix) janelaPix.close();
-            destravarInterface();
+        if (doc.exists) {
+            const dados = doc.data();
+            console.log("Status atual:", dados.status); // Útil para debugar
+
+            if (dados.status === "PAGO") {
+                console.log("Pagamento confirmado! Destravando...");
+                
+                // Tenta fechar a janela do QR Code
+                if (janelaPix && !janelaPix.closed) {
+                    janelaPix.close();
+                }
+
+                // Chama a função para liberar os macros no site principal
+                destravarInterface();
+            }
         }
+    }, (error) => {
+        console.error("Erro na escuta do Firebase:", error);
     });
 }
 
