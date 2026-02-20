@@ -254,45 +254,54 @@
     <script src="./js/pix.js"></script>
     
  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        // 1. Olha para o link e tenta achar o "?tema="
-        const parametros = new URLSearchParams(window.location.search);
-        let temaAtual = parametros.get("tema");
+document.addEventListener("DOMContentLoaded", () => {
+    const parametros = new URLSearchParams(window.location.search);
+    let temaAtual = parametros.get("tema");
 
-        // 2. Salva no navegador do cliente
-        if (temaAtual) {
-            localStorage.setItem("tema_biocode", temaAtual);
-        } else {
-            temaAtual = localStorage.getItem("tema_biocode") || "star";
-        }
+    if (temaAtual) {
+        localStorage.setItem("tema_biocode", temaAtual);
+    } else {
+        temaAtual = localStorage.getItem("tema_biocode") || "star";
+    }
 
-        // 3. Se for 'basic', aplica o Modo Neutro (Grafite e Cinza)
-        if (temaAtual === "basic") {
-            const estiloNeutro = document.createElement('style');
-            estiloNeutro.innerHTML = `
-                /* Fundos Neutros */
-                body.bg-pink-50 { background-color: #f8fafc !important; }
-                .bg-pink-50\\/50 { background-color: #f1f5f9 !important; }
-                .bg-pink-600, .bg-purple-600 { background-color: #1e293b !important; }
-                
-                /* Textos Neutros */
-                .text-pink-500, .text-purple-500 { color: #64748b !important; }
-                .text-pink-600, .text-purple-600 { color: #334155 !important; }
-                .text-purple-100 { color: #cbd5e1 !important; }
-                
-                /* Bordas Neutras */
-                .border-pink-100, .border-purple-100 { border-color: #e2e8f0 !important; }
-                
-                /* Gradientes Neutros (Cinza e Chumbo) */
-                .from-pink-500 { --tw-gradient-from: #64748b !important; }
-                .to-purple-600 { --tw-gradient-to: #334155 !important; }
-                .from-purple-600 { --tw-gradient-from: #475569 !important; }
-                .to-indigo-700 { --tw-gradient-to: #0f172a !important; }
-            `;
-            document.head.appendChild(estiloNeutro);
-        }
-    });
-    </script>
+    if (temaAtual === "basic") {
+        const estiloNeutro = document.createElement('style');
+        estiloNeutro.innerHTML = `
+            /* 1. Reset de Fundo do Body */
+            body { background-color: #f1f5f9 !important; background-image: none !important; }
+
+            /* 2. Botões e Elementos de Ação (Substitui Rosa/Roxo por Grafite) */
+            .bg-pink-600, .bg-purple-600, .btn-star, button[type="submit"] { 
+                background-color: #0f172a !important; 
+                background-image: none !important;
+                color: white !important;
+            }
+
+            /* 3. Textos de Título (Substitui Roxo por Chumbo) */
+            .text-purple-600, .text-pink-600, .text-pink-500 { 
+                color: #1e293b !important; 
+            }
+
+            /* 4. Banner de Compra (Transforma em Gradiente Neutro) */
+            #banner_compra { 
+                background: linear-gradient(to right, #1e293b, #334155) !important; 
+            }
+
+            /* 5. Cards e Bordas */
+            .bg-pink-50\\/50 { background-color: #ffffff !important; }
+            .border-pink-100, .border-purple-100 { border-color: #e2e8f0 !important; }
+            
+            /* 6. Ajuste de links e destaques */
+            a.text-purple-600 { color: #334155 !important; }
+        `;
+        document.head.appendChild(estiloNeutro);
+
+        // Ajuste opcional de texto para o modo neutro
+        const subTitle = document.querySelector('h3.text-purple-600');
+        if(subTitle) subTitle.innerText = "Protocolo DreamTech:";
+    }
+});
+</script>
 
 </body>
 </html>
