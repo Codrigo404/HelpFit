@@ -216,7 +216,31 @@
                 </div>
                 <div id="ad-macros" class="mt-8 w-full no-print border-t border-gray-100 pt-6"></div>
             </div>
+                <div id="modalPix" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
+    <div class="bg-[#1e293b] w-full max-w-md rounded-3xl p-6 border border-[#334155] text-center">
+        <h2 style="color: #22c55e;" class="text-2xl font-black mb-4">BIOCODE PIX ⚡</h2>
+        
+        <div id="loadingPix" class="py-10 text-white">
+            <p class="animate-pulse">⏳ Gerando seu QR Code...</p>
+        </div>
 
+        <div id="conteudoPix" class="hidden">
+            <p class="text-sm text-gray-400 mb-4">Escaneie o código abaixo:</p>
+            <img id="imgQrCode" src="" class="w-64 h-64 mx-auto border-4 border-white rounded-2xl mb-4">
+            
+            <p class="text-[10px] text-gray-500 uppercase font-bold mb-1">Copia e Cola:</p>
+            <textarea id="textoCopiaCola" readonly class="w-full h-20 bg-[#0f172a] text-[#22c55e] border border-[#334155] rounded-xl p-3 text-xs mb-4"></textarea>
+            
+            <div class="bg-[#22c55e] text-[#064e3b] p-3 rounded-xl font-bold text-xs">
+                A tela liberará automaticamente após o pagamento!
+            </div>
+        </div>
+        
+        <button onclick="document.getElementById('modalPix').classList.add('hidden')" class="mt-6 text-gray-500 text-xs underline">
+            Fechar e voltar
+        </button>
+    </div>
+</div>
         </main>
 
         <aside class="hidden lg:block sticky top-8 no-print">

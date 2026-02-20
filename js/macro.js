@@ -140,14 +140,19 @@ function renderDieta(pTotal, cTotal, gTotal) {
     document.getElementById('results').classList.remove('hidden');
 }
 
-// SINCRONIZAÇÃO COM FIREBASE (Usa 'db' do seu HTML)
-if (typeof db !== 'undefined') {
-    db.collection("config").doc("global").onSnapshot((doc) => {
-        if (doc.exists) {
-            window.modoAdminLiberado = doc.data().visualizacaoTotal || false;
-            if (document.getElementById('age').value) calculateMacros();
-        }
-    });
+// SINCRONIZAÇÃO COM FIREBASE (Padronizado para monitorar o CPF digitado)
+function iniciarMonitoramentoBioCode(cpf) {
+    if (typeof db !== 'undefined' && cpf) {
+        db.collection("pagamentos").doc(cpf).onSnapshot((doc) => {
+            if (doc.exists) {
+                const status = doc.data().status;
+                if (status === "PAGO" || status === "RECEIVED" || status === "CONFIRMED") {
+                    window.modoAdminLiberado = true;
+                    if (document.getElementById('age').value) calculateMacros();
+                }
+            }
+        });
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -157,5 +162,13 @@ document.addEventListener('DOMContentLoaded', () => {
         bairrosRJ.forEach(b => { let o = document.createElement('option'); o.value = b; o.textContent = b; sB.appendChild(o); });
     }
     const form = document.getElementById('macroCalculatorForm');
-    if (form) form.onsubmit = (e) => { e.preventDefault(); calculateMacros(); };
+    if (form) {
+        form.onsubmit = (e) => { 
+            e.preventDefault(); 
+            // Captura o CPF para iniciar o monitoramento assim que gerar a dieta
+            const cpf = document.getElementById('user_cpf').value.replace(/\D/g, '');
+            calculateMacros(); 
+            iniciarMonitoramentoBioCode(cpf);
+        };
+    }
 });

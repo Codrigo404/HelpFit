@@ -1,5 +1,5 @@
 /* ==========================================================================
-   DREAMTECH - MÓDULO DE PAGAMENTO E MONITORAMENTO (VERSÃO MOBILE OK)
+   DREAMTECH - MÓDULO DE PAGAMENTO E MONITORAMENTO (VERSÃO MODAL BIOCODE)
    ========================================================================== */
 
 if (!window.firebaseAppBioCode) {
@@ -13,7 +13,8 @@ if (!window.firebaseAppBioCode) {
     };
     window.firebaseAppBioCode = firebase.initializeApp(firebaseConfigBioCode, "BioCodeApp");
 }
-var db= firebase.firestore(window.firebaseAppBioCode);
+// Padronizado para usar a variável 'db' conforme definido no seu HTML
+var db = firebase.firestore(window.firebaseAppBioCode);
 
 async function irParaPagamento() {
     const urlApi = "https://us-central1-database-biocode.cloudfunctions.net/gerarPixBioCode";
@@ -22,22 +23,24 @@ async function irParaPagamento() {
     const cpfRaw = document.getElementById('user_cpf')?.value;
     const cpf = cpfRaw?.replace(/\D/g, '');
 
-    if (!nome || !email || !cpf) {
-        alert("🚨 Preencha Nome, E-mail e CPF para liberar seu acesso!");
+    if (!nome || !email || !cpf || cpf.length !== 11) {
+        alert("🚨 Rodrigo, preencha Nome, E-mail e um CPF válido para liberar seu acesso!");
         return;
     }
 
-    // RESOLUÇÃO PARA CELULAR: Abre a janela IMEDIATAMENTE antes do fetch
-    const win = window.open("", "Pagamento_BioCode", "width=450,height=700");
-    if (!win) {
-        alert("⚠️ Por favor, libere os pop-ups do seu navegador para ver o QR Code!");
-        return;
-    }
-    // Tela de carregamento dentro da janelinha
-    win.document.write('<body style="background:#0f172a; color:white; text-align:center; padding-top:50px; font-family:sans-serif;"><h3>⏳ Gerando seu QR Code...</h3></body>');
+    // Gerenciamento do Modal (Captura os IDs que você colocou no HTML)
+    const modal = document.getElementById('modalPix');
+    const loading = document.getElementById('loadingPix');
+    const conteudo = document.getElementById('conteudoPix');
+    
+    // Abre o modal e mostra o carregamento
+    modal.classList.remove('hidden');
+    loading.classList.remove('hidden');
+    conteudo.classList.add('hidden');
 
     window.cpfAtual = cpf;
     const btnCompra = document.getElementById('btn_comprar_agora');
+    
     if (btnCompra) {
         btnCompra.innerHTML = "⏳ PROCESSANDO...";
         btnCompra.style.opacity = "0.7";
@@ -53,26 +56,22 @@ async function irParaPagamento() {
         const data = await response.json();
 
         if (data.sucesso) {
-            // Atualiza a janela que já estava aberta com o QR Code e as cores do BIOCODE
-            win.document.body.innerHTML = `
-                <div style="font-family:sans-serif; text-align:center; padding:20px; background:#0f172a; color:white; min-height:100vh;">
-                    <h2 style="color:#22c55e;">BIOCODE PIX ⚡</h2>
-                    <p style="font-size:14px;">Escaneie o código abaixo:</p>
-                    <img src="data:image/png;base64,${data.qrCodeBase64}" style="width:250px; border: 5px solid white; border-radius:15px; margin:15px 0;">
-                    <p style="font-size:12px; color:#94a3b8;">Código Copia e Cola:</p>
-                    <textarea readonly style="width:100%; height:80px; background:#1e293b; color:#22c55e; border:1px solid #334155; border-radius:8px; padding:10px; font-size:11px; margin-bottom:15px;">${data.pixCopiaECola}</textarea>
-                    <div style="background:#22c55e; color:#064e3b; padding:10px; border-radius:8px; font-weight:bold; font-size:13px;">
-                        Pague agora para liberar o acesso automaticamente!
-                    </div>
-                </div>
-            `;
-            monitorarPagamento(cpf, win);
+            // Preenche o Modal com o QR Code e o código Copia e Cola
+            document.getElementById('imgQrCode').src = `data:image/png;base64,${data.qrCodeBase64}`;
+            document.getElementById('textoCopiaCola').value = data.pixCopiaECola;
+
+            // Esconde o loading e mostra o QR Code gerado
+            loading.classList.add('hidden');
+            conteudo.classList.remove('hidden');
+
+            // Inicia o monitoramento em tempo real
+            monitorarPagamento(cpf);
         } else {
-            win.close();
+            modal.classList.add('hidden');
             alert("Erro no servidor: " + data.detalhes);
         }
     } catch (e) {
-        win.close();
+        modal.classList.add('hidden');
         console.error(e);
         alert("Erro de conexão. Verifique sua internet.");
     } finally {
@@ -84,22 +83,18 @@ async function irParaPagamento() {
     }
 }
 
-function monitorarPagamento(cpf, janelaPix) {
-    // Escuta em tempo real o documento do pagamento pelo CPF
+function monitorarPagamento(cpf) {
+    // Escuta em tempo real o status do pagamento no banco de dados
     db.collection("pagamentos").doc(cpf).onSnapshot((doc) => {
         if (doc.exists) {
-            const dados = doc.data();
-            console.log("Status atual:", dados.status); // Útil para debugar
-
-            if (dados.status === "PAGO") {
-                console.log("Pagamento confirmado! Destravando...");
+            const status = doc.data().status;
+            
+            // Aceita os status comuns de confirmação do Asaas
+            if (status === "PAGO" || status === "RECEIVED" || status === "CONFIRMED") {
+                // Fecha o modal automaticamente
+                document.getElementById('modalPix').classList.add('hidden');
                 
-                // Tenta fechar a janela do QR Code
-                if (janelaPix && !janelaPix.closed) {
-                    janelaPix.close();
-                }
-
-                // Chama a função para liberar os macros no site principal
+                // Libera a interface
                 destravarInterface();
             }
         }
@@ -116,17 +111,18 @@ function destravarInterface() {
     const actionButtons = document.getElementById('action_buttons');
     if (actionButtons) actionButtons.classList.remove('hidden');
 
+    // Força o recálculo dos macros para remover os cadeados 🔒
     if (typeof calculateMacros === "function") {
         calculateMacros();
-    } else if (window.macrosIniciais) {
-        document.getElementById('proteinGrams').innerText = Math.round(window.macrosIniciais.p) + "g";
-        document.getElementById('carbGrams').innerText = Math.round(window.macrosIniciais.c) + "g";
-        document.getElementById('fatGrams').innerText = Math.round(window.macrosIniciais.f) + "g";
     }
 
+    // Remove os efeitos de desfoque das listas de alimentos
     document.querySelectorAll('.blur-\\[5px\\]').forEach(item => {
         item.classList.remove('blur-[5px]', 'select-none', 'opacity-80', 'pointer-events-none');
     });
 
     alert("✅ BIOCODE LIBERADO! ✨");
 }
+
+// Torna a função global para que o onclick do botão funcione
+window.irParaPagamento = irParaPagamento;
