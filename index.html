@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocolo das Estrelas | Star Meirelles & DreamTech ✨</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./css/index.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <style> 
+        body { font-family: 'Poppins', sans-serif; } 
+    </style>
+</head>
+
+<body class="bg-pink-50 min-h-screen text-gray-700">
+
+    <div class="grid grid-cols-1 lg:grid-cols-[240px_1fr_240px] gap-6 p-4 md:p-8 max-w-7xl mx-auto items-start">
+        
+        <aside class="hidden lg:block sticky top-8 no-print">
+            <div id="sidebar-left"></div> 
+        </aside>
+
+        <main class="w-full mx-auto flex flex-col gap-10">
+
+            <div class="text-center no-print px-4">
+                <h3 class="font-bold text-lg md:text-xl mb-1 text-purple-600">Protocolo das Estrelas:</h3>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-gray-600 mb-4 tracking-tight">Construindo o Shape dos seus Sonhos ✨</h1>
+                <p class="text-gray-400 text-sm md:text-base max-w-2xl mx-auto leading-relaxed font-medium">
+                    Bem-vinda à sua maior transformação com a tecnologia da <strong class="text-gray-600">DreamTech</strong> e curadoria da 
+                    <a href="https://www.instagram.com/starmeirelles/" target="_blank" class="font-bold text-purple-600 hover:underline transition-colors">Star Meirelles</a>.
+                </p>
+            </div>
+
+            <div class="glass-card">
+                <h2 class="text-2xl font-bold mb-6 text-gray-700 flex items-center gap-2">🏃‍♀️ Calculadora de Corrida Detalhada</h2>
+                <form id="runCalculatorForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 no-print">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 mb-1 ml-2">Idade</label>
+                        <input type="number" id="run_age" class="w-full" required placeholder="Ex: 25">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 mb-1 ml-2">Seu Peso (kg)</label>
+                        <input type="number" id="run_weight" class="w-full" required placeholder="Ex: 70">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 mb-1 ml-2">Meta (Kcal para queimar)</label>
+                        <input type="number" id="fat_goal_cals" value="300" class="w-full" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 mb-1 ml-2">Intensidade do Treino</label>
+                        <select id="heart_rate_zone" class="w-full bg-white">
+                            <option value="0.70">Moderada (Queima Eficiente)</option>
+                            <option value="0.60">Leve (Iniciante)</option>
+                            <option value="0.85">Intensa (Performance)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="col-span-full btn-star py-4 rounded-xl font-bold text-white shadow-lg bg-pink-600">Calcular Plano de Corrida 🚀</button>
+                </form>
+
+                <div id="run_results" class="mt-8 hidden">
+                    <div class="p-6 bg-pink-50/50 rounded-2xl text-center border border-pink-100 mb-6">
+                        <p class="text-xs text-gray-500 uppercase font-bold mb-2">Distância Total Necessária:</p>
+                        <p class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">
+                            <span id="distanceDisplay">--</span> km
+                        </p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 text-center">
+                            <p class="text-[10px] font-bold text-gray-400 uppercase">FCM (Máxima)</p>
+                            <p id="fcmDisplay" class="text-xl font-black text-gray-700">--</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 text-center">
+                            <p class="text-[10px] font-bold text-pink-500 uppercase">Zona de Queima</p>
+                            <p id="fatBurnZoneDisplay" class="text-xl font-black text-pink-600">--</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 text-center">
+                            <p class="text-[10px] font-bold text-purple-500 uppercase">Gasto por KM</p>
+                            <p id="calsPerKmDisplay" class="text-xl font-black text-purple-600">--</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="ad-run" class="mt-8 w-full no-print border-t border-gray-100 pt-6"></div>
+            </div>
+
+            <div class="glass-card">
+                <h2 class="text-2xl font-bold mb-6 text-gray-700 flex items-center gap-2">💧 Calculadora de Hidratação</h2>
+                <form id="waterCalculatorForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 no-print">
+                    <select id="water_gender" class="w-full bg-white">
+                        <option value="female">Feminino</option>
+                        <option value="male">Masculino</option>
+                    </select>
+                    <input type="number" id="water_age" placeholder="Idade" class="w-full" required>
+                    <input type="number" id="water_height" placeholder="Altura (cm)" class="w-full" required>
+                    <input type="number" id="water_weight" placeholder="Peso (kg)" class="w-full" required>
+                    <input type="hidden" id="water_activity" value="500">
+                    <button type="submit" class="col-span-full btn-star py-4 rounded-xl font-bold text-white shadow-lg bg-blue-500 uppercase tracking-widest">Ver Meta de Água 💧</button>
+                </form>
+
+                <div id="water_results" class="mt-8 hidden">
+                    <div class="p-6 bg-blue-50/50 rounded-2xl text-center border border-blue-100">
+                        <p class="text-xs text-gray-500 uppercase font-bold mb-2">Sua meta diária personalizada:</p>
+                        <p class="text-5xl font-black text-blue-500"><span id="waterLitersDisplay">--</span> L</p>
+                        <p class="text-[10px] text-blue-400 mt-2 italic">Incluindo 500ml extras recomendados pela Star.</p>
+                    </div>
+                </div>
+                <div id="ad-water" class="mt-8 w-full no-print border-t border-gray-100 pt-6"></div>
+            </div>
+
+            <div class="glass-card">
+                <h2 class="text-2xl font-bold mb-6 text-gray-700 flex items-center gap-2">🥗 Calculadora de Macros</h2>
+                <form id="macroCalculatorForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 no-print mb-6">
+                    
+                    <div class="col-span-full grid grid-cols-1 md:grid-cols-4 gap-4 mb-2">
+                        <div class="md:col-span-1">
+                            <label class="block text-xs font-bold text-gray-500 mb-1 ml-2 uppercase">Primeiro Nome</label>
+                            <input type="text" id="user_name" placeholder="Ex: Maria" required class="w-full border border-gray-300 rounded-lg p-2">
+                        </div>
+                        <div class="md:col-span-1">
+                            <label class="block text-xs font-bold text-gray-500 mb-1 ml-2 uppercase">Estado (UF)</label>
+                            <select id="user_state" required class="w-full bg-white text-sm border border-gray-300 rounded-lg p-2">
+                                <option value="RJ" selected>RJ</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-bold text-gray-500 mb-1 ml-2 uppercase">Bairro</label>
+                            <select id="user_neighborhood" required class="w-full bg-white text-sm border border-gray-300 rounded-lg p-2">
+                                <option value="" disabled selected>Selecione seu Bairro</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-span-full grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div class="md:col-span-1">
+                            <label class="block text-xs font-bold text-gray-500 mb-1 ml-2 uppercase">Celular</label>
+                            <input type="tel" id="user_phone" placeholder="(21) 99999-9999" required class="w-full border border-gray-300 rounded-lg p-2">
+                        </div>
+                        <div class="md:col-span-1">
+                            <label class="block text-xs font-bold text-gray-500 mb-1 ml-2 uppercase">E-mail</label>
+                            <input type="email" id="user_email" placeholder="seu@email.com" required class="w-full border border-gray-300 rounded-lg p-2">
+                        </div>
+                        <div class="md:col-span-1">
+                            <label class="block text-xs font-bold text-gray-500 mb-1 ml-2 uppercase">CPF</label>
+                            <input type="text" id="user_cpf" placeholder="000.000.000-00" required class="w-full border border-gray-300 rounded-lg p-2">
+                        </div>
+                    </div>
+
+                    <select id="gender" class="w-full bg-white border border-gray-300 rounded-lg p-2">
+                        <option value="female">Feminino</option>
+                        <option value="male">Masculino</option>
+                    </select>
+                    <input type="number" id="age" placeholder="Idade" class="w-full border border-gray-300 rounded-lg p-2" required>
+                    <input type="number" id="height" placeholder="Altura (cm)" class="w-full border border-gray-300 rounded-lg p-2" required>
+                    <input type="number" id="weight" placeholder="Peso (kg)" class="w-full border border-gray-300 rounded-lg p-2" required>
+                    
+                    <select id="activity" class="col-span-full w-full bg-white border border-gray-300 rounded-lg p-2">
+                        <option value="1.2">Sedentário</option>
+                        <option value="1.55">Moderado (3-5x/semana)</option>
+                    </select>
+                    
+                    <select id="goal" class="col-span-full w-full bg-white font-bold text-purple-600 border-2 border-purple-100 rounded-lg p-2">
+                        <option value="loss">🔥 Perder Peso (Secar)</option>
+                        <option value="maintain">⚖️ Manter Peso</option>
+                        <option value="mass">💪 Ganhar Massa</option>
+                    </select>
+                    
+                    <button type="submit" id="btnSubmitMacro" class="col-span-full btn-star py-4 rounded-xl font-bold text-white shadow-lg bg-purple-600 uppercase tracking-widest">
+                        Gerar Dieta Parcial 🥗
+                    </button>
+                </form>
+
+                <div id="results" class="mt-10 hidden">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-red-500 text-center flex flex-col items-center justify-center min-h-[140px]">
+                            <p class="text-[10px] font-bold text-gray-400 uppercase mb-1 tracking-widest">Proteína 🥩</p>
+                            <div id="proteinGrams" class="text-4xl font-black text-gray-800 tracking-tighter">--</div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-yellow-500 text-center flex flex-col items-center justify-center min-h-[140px]">
+                            <p class="text-[10px] font-bold text-gray-400 uppercase mb-1 tracking-widest">Carbo 🥖</p>
+                            <div id="carbGrams" class="text-4xl font-black text-gray-800 tracking-tighter">--</div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-green-500 text-center flex flex-col items-center justify-center min-h-[140px]">
+                            <p class="text-[10px] font-bold text-gray-400 uppercase mb-1 tracking-widest">Gordura 🥑</p>
+                            <div id="fatGrams" class="text-4xl font-black text-gray-800 tracking-tighter">--</div>
+                        </div>
+                    </div>
+
+                    <div id="banner_compra" class="mb-10 p-6 bg-gradient-to-r from-purple-600 to-indigo-700 rounded-2xl text-center shadow-lg">
+                        <h3 class="text-white font-black text-lg md:text-xl mb-2 flex items-center justify-center gap-2">
+                            <span>🔒</span> Protocolo Parcialmente Bloqueado
+                        </h3>
+                        <p class="text-purple-100 text-sm leading-relaxed mb-6 max-w-2xl mx-auto">
+                            As suas fontes de Gordura já estão visíveis! Para <strong>destravar as quantidades exatas de Proteína e Carboidrato</strong> e visualizar todos os alimentos, prossiga para a liberação do seu plano completo da Star. ✨
+                        </p>
+                        <button id="btn_comprar_agora" onclick="irParaPagamento()" type="button" class="inline-block w-full md:w-auto px-8 py-4 bg-yellow-400 hover:bg-yellow-300 text-purple-900 font-black rounded-xl shadow-xl transition-all hover:scale-105 uppercase tracking-widest text-sm cursor-pointer">
+                            ⚡ Destravar Meu Protocolo Agora
+                        </button>
+                    </div>
+
+                    <div id="dietExamples" class="mb-8 flex flex-col gap-2"></div>
+
+                    <div id="action_buttons" class="hidden flex-col gap-3 no-print mt-6">
+                        <button id="whatsappBtn" onclick="queimarTicket('whatsapp')" class="w-full py-4 rounded-full font-bold text-white shadow-lg flex items-center justify-center gap-2" style="background-color: #25D366 !important;">
+                            <span class="text-xl">📲</span> Enviar Plano Completo no WhatsApp
+                        </button>
+                        <button onclick="queimarTicket('imprimir')" class="w-full bg-gray-800 hover:bg-gray-900 transition-colors text-white py-4 rounded-full font-bold text-sm shadow-lg">
+                            🖨️ Salvar em PDF / Imprimir Plano
+                        </button>
+                    </div>
+
+                </div>
+                <div id="ad-macros" class="mt-8 w-full no-print border-t border-gray-100 pt-6"></div>
+            </div>
+
+        </main>
+
+        <aside class="hidden lg:block sticky top-8 no-print">
+            <div id="sidebar-right"></div>
+        </aside>
+
+    </div>
+
+    <footer class="mt-12 p-8 border-t border-gray-200 text-center no-print bg-white/50">
+        <p class="text-gray-600 font-medium text-sm">Desenvolvido por Star Meirelles</p>
+        <p class="text-xs text-gray-400 mb-4">© 2026 DreamTech Corp</p>
+    </footer>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBDvHrkCyIWirWDorgTxGWyycWecqEnZT4",
+            authDomain: "database-biocode.firebaseapp.com",
+            projectId: "database-biocode",
+            storageBucket: "database-biocode.firebasestorage.app",
+            messagingSenderId: "153606225851",
+            appId: "1:153606225851:web:f4700f168f70d0e8914e9e"
+        };
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+    </script>
+
+    <script src="./js/afiliado.js"></script> 
+    <script src="./js/agua.js"></script> 
+    <script src="./js/corrida.js"></script> 
+    <script src="./js/macro.js"></script> 
+    <script src="./js/leads.js"></script>
+    <script src="./js/whatsap.js"></script>
+    <script src="./js/pix.js"></script>
+    
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+    // 1. Olha para o link e tenta achar o "?tema="
+    const parametros = new URLSearchParams(window.location.search);
+    let temaAtual = parametros.get("tema");
+
+    // 2. Se achou na URL, salva no navegador do cliente
+    if (temaAtual) {
+        localStorage.setItem("tema_biocode", temaAtual);
+    } else {
+        // Se não achou na URL, tenta lembrar o que estava salvo (padrão é "star")
+        temaAtual = localStorage.getItem("tema_biocode") || "star";
+    }
+
+    // 3. Troca a classe do <body> para mudar as cores
+    if (temaAtual === "basic") {
+        document.body.classList.add("tema-neutro");
+        document.body.classList.remove("tema-rosa");
+    } else {
+        document.body.classList.add("tema-rosa");
+        document.body.classList.remove("tema-neutro");
+    }
+});
+    </script>
+
+</body>
+</html>
