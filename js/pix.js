@@ -1,5 +1,5 @@
 /* ==========================================================================
-   DREAMTECH - MÓDULO DE PAGAMENTO E MONITORAMENTO (VERSÃO FINAL)
+   DREAMTECH - MÓDULO DE PAGAMENTO E MONITORAMENTO (VERSÃO MOBILE OK)
    ========================================================================== */
 
 if (!window.firebaseAppBioCode) {
@@ -23,14 +23,23 @@ async function irParaPagamento() {
     const cpf = cpfRaw?.replace(/\D/g, '');
 
     if (!nome || !email || !cpf) {
-        alert("🚨 Estrela, preencha Nome, E-mail e CPF para liberar o protocolo!");
+        alert("🚨 Preencha Nome, E-mail e CPF para liberar seu acesso!");
         return;
     }
+
+    // RESOLUÇÃO PARA CELULAR: Abre a janela IMEDIATAMENTE antes do fetch
+    const win = window.open("", "Pagamento_BioCode", "width=450,height=700");
+    if (!win) {
+        alert("⚠️ Por favor, libere os pop-ups do seu navegador para ver o QR Code!");
+        return;
+    }
+    // Tela de carregamento dentro da janelinha
+    win.document.write('<body style="background:#0f172a; color:white; text-align:center; padding-top:50px; font-family:sans-serif;"><h3>⏳ Gerando seu QR Code...</h3></body>');
 
     window.cpfAtual = cpf;
     const btnCompra = document.getElementById('btn_comprar_agora');
     if (btnCompra) {
-        btnCompra.innerHTML = "⏳ GERANDO PIX...";
+        btnCompra.innerHTML = "⏳ PROCESSANDO...";
         btnCompra.style.opacity = "0.7";
         btnCompra.style.pointerEvents = "none";
     }
@@ -44,27 +53,28 @@ async function irParaPagamento() {
         const data = await response.json();
 
         if (data.sucesso) {
-            const win = window.open("", "Pagamento BioCode", "width=450,height=700");
-            if (!win) {
-                alert("⚠️ Libere os pop-ups para ver o QR Code!");
-                return;
-            }
-            win.document.write(`
-                <body style="font-family:sans-serif; text-align:center; padding:30px; background:#fff5f7;">
-                    <h2 style="color:#7c3aed;">QR Code Gerado! 🌟</h2>
-                    <img src="data:image/png;base64,${data.qrCodeBase64}" style="width:250px; border-radius:15px;">
-                    <p style="font-size:12px; color:#666;">Copia e Cola:</p>
-                    <textarea readonly style="width:100%; height:60px;">${data.pixCopiaECola}</textarea>
-                    <p style="color:#d946ef; font-weight:bold;">O plano liberará automaticamente após o pagamento!</p>
-                </body>
-            `);
+            // Atualiza a janela que já estava aberta com o QR Code e as cores do BIOCODE
+            win.document.body.innerHTML = `
+                <div style="font-family:sans-serif; text-align:center; padding:20px; background:#0f172a; color:white; min-height:100vh;">
+                    <h2 style="color:#22c55e;">BIOCODE PIX ⚡</h2>
+                    <p style="font-size:14px;">Escaneie o código abaixo:</p>
+                    <img src="data:image/png;base64,${data.qrCodeBase64}" style="width:250px; border: 5px solid white; border-radius:15px; margin:15px 0;">
+                    <p style="font-size:12px; color:#94a3b8;">Código Copia e Cola:</p>
+                    <textarea readonly style="width:100%; height:80px; background:#1e293b; color:#22c55e; border:1px solid #334155; border-radius:8px; padding:10px; font-size:11px; margin-bottom:15px;">${data.pixCopiaECola}</textarea>
+                    <div style="background:#22c55e; color:#064e3b; padding:10px; border-radius:8px; font-weight:bold; font-size:13px;">
+                        Pague agora para liberar o acesso automaticamente!
+                    </div>
+                </div>
+            `;
             monitorarPagamento(cpf, win);
         } else {
-            alert("Erro: " + data.detalhes);
+            win.close();
+            alert("Erro no servidor: " + data.detalhes);
         }
     } catch (e) {
+        win.close();
         console.error(e);
-        alert("Erro na conexão com o servidor.");
+        alert("Erro de conexão. Verifique sua internet.");
     } finally {
         if (btnCompra) {
             btnCompra.innerHTML = "⚡ Destravar Meu Protocolo Agora";
@@ -83,49 +93,25 @@ function monitorarPagamento(cpf, janelaPix) {
     });
 }
 
-// --- DESTRAVAR INTERFACE (AJUSTADO) ---
 function destravarInterface() {
-    // 1. AVISO GLOBAL: Libera a trava para o macro.js enxergar
     window.modoAdminLiberado = true;
-
     const banner = document.getElementById('banner_compra');
     if (banner) banner.style.display = 'none';
 
     const actionButtons = document.getElementById('action_buttons');
     if (actionButtons) actionButtons.classList.remove('hidden');
 
-    // 2. FORÇA O RECÁLCULO: Faz o macro.js trocar o 🔒 pelos números reais
     if (typeof calculateMacros === "function") {
         calculateMacros();
     } else if (window.macrosIniciais) {
-        // Backup caso o calculateMacros não responda
         document.getElementById('proteinGrams').innerText = Math.round(window.macrosIniciais.p) + "g";
         document.getElementById('carbGrams').innerText = Math.round(window.macrosIniciais.c) + "g";
         document.getElementById('fatGrams').innerText = Math.round(window.macrosIniciais.f) + "g";
     }
 
-    // 3. LIMPA O VISUAL
     document.querySelectorAll('.blur-\\[5px\\]').forEach(item => {
         item.classList.remove('blur-[5px]', 'select-none', 'opacity-80', 'pointer-events-none');
     });
 
-    alert("✅ Protocolo Liberado! ✨");
-}
-
-async function queimarTicket(acao) {
-    if (!confirm("⚠️ Deseja finalizar sua sessão?")) return;
-    if (acao === 'whatsapp' && typeof enviarWhatsApp === "function") {
-        enviarWhatsApp();
-    } else if (acao === 'imprimir') {
-        window.print();
-    }
-    if (window.cpfAtual) {
-        try {
-            await dbBioCode.collection("pagamentos").doc(window.cpfAtual).update({ status: "USADO" });
-            localStorage.setItem(`respawn_${window.cpfAtual}`, Date.now());
-            setTimeout(() => { window.location.reload(); }, 2000);
-        } catch (err) {
-            console.error("Erro ao queimar ticket", err);
-        }
-    }
+    alert("✅ BIOCODE LIBERADO! ✨");
 }

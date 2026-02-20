@@ -245,79 +245,81 @@
         const db = firebase.firestore();
     </script>
 
-    <script src="./js/afiliado.js"></script> 
+   <script src="./js/afiliado.js"></script> 
     <script src="./js/agua.js"></script> 
     <script src="./js/corrida.js"></script> 
     <script src="./js/macro.js"></script> 
     <script src="./js/leads.js"></script>
     <script src="./js/whatsap.js"></script>
     <script src="./js/pix.js"></script>
-    
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    const parametros = new URLSearchParams(window.location.search);
-    let temaAtual = parametros.get("tema");
 
-    if (temaAtual) {
-        localStorage.setItem("tema_biocode", temaAtual);
-    } else {
-        temaAtual = localStorage.getItem("tema_biocode") || "star";
+    <script>
+    const inputCPF = document.getElementById('user_cpf');
+
+    // Máscara automática: evita que o usuário envie pontos/traços errados para o Firebase
+    inputCPF.addEventListener('input', (e) => {
+        let v = e.target.value.replace(/\D/g, '');
+        if (v.length > 11) v = v.slice(0, 11);
+        v = v.replace(/(\d{3})(\d)/, '$1.$2');
+        v = v.replace(/(\d{3})(\d)/, '$1.$2');
+        v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+        e.target.value = v;
+    });
+
+    function validarCPF(cpf) {
+        cpf = cpf.replace(/[^\d]+/g, '');
+        if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+        let add = 0;
+        for (let i = 0; i < 9; i++) add += parseInt(cpf.charAt(i)) * (10 - i);
+        let rev = 11 - (add % 11);
+        if (rev === 10 || rev === 11) rev = 0;
+        if (rev !== parseInt(cpf.charAt(9))) return false;
+        add = 0;
+        for (let i = 0; i < 10; i++) add += parseInt(cpf.charAt(i)) * (11 - i);
+        rev = 11 - (add % 11);
+        if (rev === 10 || rev === 11) rev = 0;
+        return rev === parseInt(cpf.charAt(10));
     }
 
-    if (temaAtual === "basic") {
-        // 1. Aplica a Paleta de Cores do Dashboard (Azul Marinho, Verde e Branco)
-        const estiloBioCode = document.createElement('style');
-        estiloBioCode.innerHTML = `
-            /* Fundo principal Azul Profundo */
-            body { background-color: #0f172a !important; color: #ffffff !important; }
-            
-            /* Cards em Azul Marinho mais claro para contraste */
-            .glass-card { background-color: #1e293b !important; border: 1px solid #334155 !important; color: #f8fafc !important; }
-            
-            /* Títulos e Destaques em Verde Neon BioCode */
-            h1, h2, h3, .text-purple-600, .text-pink-600, .text-pink-500 { color: #22c55e !important; }
-            
-            /* Botões em Verde com texto Branco/Preto */
-            .bg-pink-600, .bg-purple-600, .btn-star, button[type="submit"] { 
-                background-color: #22c55e !important; 
-                color: #064e3b !important;
-                background-image: none !important;
-                font-weight: 800 !important;
-            }
-
-            /* Banner de Compra seguindo o estilo do Admin */
-            #banner_compra { 
-                background: linear-gradient(to right, #1e3a8a, #1e40af) !important; 
-                border-left: 4px solid #22c55e !important;
-            }
-            
-            /* Inputs adaptados para o tema escuro */
-            input, select { 
-                background-color: #334155 !important; 
-                color: white !important; 
-                border-color: #475569 !important; 
-            }
-        `;
-        document.head.appendChild(estiloBioCode);
-
-        // 2. Troca dos Textos para a Identidade BIOCODE
-        
-        // BIOCODE (Em Branco e Verde como você pediu)
-        const subTitle = document.querySelector('h3.text-purple-600');
-        if(subTitle) {
-            subTitle.innerHTML = '<span style="color: #00FF7F;">BIO</span><span style="color: #F5FFFA;">CODE</span>';
+    inputCPF.addEventListener('blur', function() {
+        if (this.value && !validarCPF(this.value)) {
+            alert("CPF Inválido! Verifique para prosseguir com o pagamento.");
+            this.style.border = "2px solid #ef4444";
+            this.value = "";
+        } else if (this.value) {
+            this.style.border = "2px solid #22c55e"; // Verde BioCode
         }
+    });
+    </script>
 
-        // Título Principal
-        const mainTitle = document.querySelector('h1');
-        if(mainTitle) mainTitle.innerText = "TECNOLOGIA DREAMTECH A SERVIÇO DA SUA SAÚDE";
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const parametros = new URLSearchParams(window.location.search);
+        let tema = parametros.get("tema") || localStorage.getItem("tema_biocode") || "star";
+        if (parametros.get("tema")) localStorage.setItem("tema_biocode", tema);
 
-        // Texto de boas-vindas
-        const desc = document.querySelector('main p');
-        if(desc) desc.innerText = "Sua jornada de alta performance com a tecnologia da DreamTech e otimização avançada.";
-    }
-});
-</script>
+        if (tema === "basic") {
+            const style = document.createElement('style');
+            style.innerHTML = `
+                body { background-color: #0f172a !important; color: #ffffff !important; }
+                .glass-card { background-color: #1e293b !important; border: 1px solid #334155 !important; }
+                h1, h2, h3, .text-purple-600, .text-pink-600 { color: #22c55e !important; }
+                .bg-pink-600, .bg-purple-600, .btn-star, #btnSubmitMacro { 
+                    background-color: #22c55e !important; color: #064e3b !important; background-image: none !important;
+                }
+                input, select { background-color: #334155 !important; color: white !important; border-color: #475569 !important; }
+            `;
+            document.head.appendChild(style);
+
+            const sub = document.querySelector('h3.text-purple-600');
+            if(sub) sub.innerHTML = '<span style="color: #22c55e;">BIO</span><span style="color: #ffffff;">CODE</span>';
+            
+            const mainT = document.querySelector('h1');
+            if(mainT) mainT.innerText = "TECNOLOGIA DREAMTECH A SERVIÇO DA SUA SAÚDE";
+        }
+    });
+    </script>
 
 </body>
+
 </html>
