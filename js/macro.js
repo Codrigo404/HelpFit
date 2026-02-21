@@ -171,9 +171,9 @@ function calculateMacros() {
 
     if (pDisp && cDisp && fDisp) {
         pDisp.innerText = Math.round(pTotal) + "g";
-        pDisp.classList.add('macro-valor-proteina');
+        
         cDisp.innerText = Math.round(cTotal) + "g";
-        cDisp.classList.add('macro-valor-carbo');
+        
         fDisp.innerText = Math.round(gTotal) + "g";
     }
 

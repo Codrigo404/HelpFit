@@ -297,7 +297,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inicia os carrosséis segmentados
     atualizarCarrossel('corrida', 'ad-run');
     atualizarCarrossel('agua', 'ad-water');
-    atualizarCarrossel('geral', 'ad-macros');
+    atualizarCarrossel('geral', 'ad-macro');
     
     // Inicia a renderização das sidebars laterais
     renderSidebars();

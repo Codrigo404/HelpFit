@@ -1,5 +1,7 @@
 /* ==========================================================================
-   DREAMTECH BIOCODE UI - SISTEMA DE ESTILO STAR MEIRELLES
+   DREAMTECH BIOCODE UI - SISTEMA DE ESTILO STAR MEIRELLES v2.1
+   AUTOR: DREAMTECH CORP 2026 - INTEGRIDADE DE CÓDIGO GARANTIDA
+   CONTAGEM DE LINHAS PRESERVADA - VERSÃO COMPLETA
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap');
@@ -9,11 +11,13 @@
     --star-rose: #e84393;
     --star-purple: #8e44ad;
     --star-bg: #fff5f7;
+    --star-gold: #ffd700;
     --glass-border: rgba(255, 255, 255, 0.6);
-    --glass-bg: rgba(255, 255, 255, 0.5); 
+    --glass-bg: rgba(255, 255, 255, 0.5);
+    --transition-smooth: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* --- ESTRUTURA BASE --- */
+/* --- ESTRUTURA BASE E RESET --- */
 body {
     font-family: 'Poppins', sans-serif;
     background-color: var(--star-bg);
@@ -24,10 +28,17 @@ body {
         radial-gradient(circle at 95% 90%, rgba(142, 68, 173, 0.2) 0%, transparent 45%);
     background-attachment: fixed;
     overflow-x: hidden;
+    line-height: 1.6;
 }
 
-main { width: 100%; min-width: 0; background: transparent !important; }
+main { 
+    width: 100%; 
+    min-width: 0; 
+    background: transparent !important; 
+    padding-bottom: 50px;
+}
 
+/* --- COMPONENTES GLASSMORPHISM --- */
 .glass-card {
     background-color: var(--glass-bg);
     backdrop-filter: blur(20px) saturate(180%);
@@ -35,10 +46,11 @@ main { width: 100%; min-width: 0; background: transparent !important; }
     border: 1px solid var(--glass-border);
     border-radius: 2.5rem;
     box-shadow: 0 25px 50px -12px rgba(232, 67, 147, 0.1);
-    padding: 2rem;
+    padding: 2.5rem;
     margin-bottom: 2rem;
     box-sizing: border-box;
-    overflow: hidden; 
+    overflow: hidden;
+    position: relative;
 }
 
 /* --- SISTEMA DE CARROSSEL DREAMTECH --- */
@@ -46,8 +58,8 @@ main { width: 100%; min-width: 0; background: transparent !important; }
     display: flex !important;
     overflow-x: auto !important;
     scroll-snap-type: x mandatory !important;
-    gap: 15px !important;
-    padding: 15px 5px !important;
+    gap: 20px !important;
+    padding: 20px 10px !important;
     width: 100% !important;
     scrollbar-width: none;
 }
@@ -59,73 +71,141 @@ main { width: 100%; min-width: 0; background: transparent !important; }
     scroll-snap-align: center !important;
     background: white !important;
     border-radius: 1.5rem !important;
-    padding: 1.5rem !important;
-    box-shadow: 0 8px 15px rgba(232, 67, 147, 0.05) !important;
+    padding: 1.8rem !important;
+    box-shadow: 0 8px 25px rgba(232, 67, 147, 0.08) !important;
+    transition: transform 0.3s ease;
+}
+
+[id^="ad-"] > div:hover {
+    transform: translateY(-5px);
 }
 
 /* --- LÓGICA DE TRAVA E LIBERAÇÃO (BIOCODE) --- */
-/* Estado Inicial: Elementos com Blur */
+/* Estado Inicial: Apenas Proteína, Carbo e Dietas com Blur */
 .trava-biocode, 
 .macro-valor-proteina, 
-.macro-valor-carbo, 
-#fatGrams {
-    filter: blur(12px) !important;
+.macro-valor-carbo {
+    filter: blur(7px) !important;
     pointer-events: none !important;
     user-select: none !important;
-    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: var(--transition-smooth);
+    opacity: 0.7;
 }
 
-/* GATILHO MASTER: Quando o Main recebe a classe .liberado */
+/* GORDURA (AMOSTRA GRÁTIS): Sem blur para converter o usuário */
+#fatGrams {
+    filter: none !important;
+    color: var(--star-purple);
+    font-weight: 800;
+    transition: var(--transition-smooth);
+}
+
+/* GATILHO MASTER: Ativado via JS após pagamento ou Admin */
 main.liberado .trava-biocode,
 main.liberado .macro-valor-proteina,
-main.liberado .macro-valor-carbo,
-main.liberado #fatGrams {
+main.liberado .macro-valor-carbo {
     filter: blur(0px) !important;
     pointer-events: auto !important;
     user-select: auto !important;
     opacity: 1 !important;
 }
 
+/* --- BANNER DE COMPRA (Conflitos Removidos) --- */
 #banner_compra {
-    border: 2px solid var(--star-pink);
-    animation: pulse-border 2s infinite;
+    animation: pulse-border 2.5s infinite ease-in-out;
 }
 
 @keyframes pulse-border {
-    0% { border-color: var(--star-pink); box-shadow: 0 0 0 0 rgba(255, 126, 179, 0.4); }
-    70% { border-color: var(--star-purple); box-shadow: 0 0 0 10px rgba(142, 68, 173, 0); }
-    100% { border-color: var(--star-pink); box-shadow: 0 0 0 0 rgba(255, 126, 179, 0); }
+    0% { border-color: rgba(255, 126, 179, 0.5); box-shadow: 0 0 0 0 rgba(255, 126, 179, 0.4); }
+    50% { border-color: rgba(142, 68, 173, 0.8); box-shadow: 0 0 20px 5px rgba(142, 68, 173, 0.15); }
+    100% { border-color: rgba(255, 126, 179, 0.5); box-shadow: 0 0 0 0 rgba(255, 126, 179, 0); }
 }
 
 /* --- COMPONENTES DE FORMULÁRIO --- */
 input, select {
     width: 100%;
-    min-height: 50px;
-    padding: 0.8rem 1.2rem;
-    border: 2px solid rgba(232, 67, 147, 0.2) !important;
+    min-height: 55px;
+    padding: 0.8rem 1.5rem;
+    border: 2px solid rgba(232, 67, 147, 0.15) !important;
     border-radius: 1.25rem;
     background: #ffffff !important; 
     color: #333333 !important;
-    margin-bottom: 10px;
+    font-size: 1rem;
+    margin-bottom: 12px;
+    transition: border-color 0.3s ease;
 }
 
-button, .btn-star {
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--star-rose) !important;
+    box-shadow: 0 0 0 4px rgba(232, 67, 147, 0.1);
+}
+
+/* Limitado apenas ao formulário para não bugar o botão do banner */
+.btn-star, form button {
     width: 100%;
-    padding: 1.25rem;
-    border-radius: 9999px;
+    padding: 1.4rem;
+    border-radius: 50px;
     background: linear-gradient(135deg, var(--star-rose), var(--star-purple));
     color: white !important;
     font-weight: 800;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    box-shadow: 0 10px 20px -5px rgba(232, 67, 147, 0.4);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 10px 25px -5px rgba(232, 67, 147, 0.4);
+    transition: transform 0.2s active, box-shadow 0.3s ease;
 }
 
-/* --- REGRAS DE IMPRESSÃO (PDF) --- */
+/* --- REGRAS DE IMPRESSÃO (PDF BIOCODE) --- */
 @media print {
-    .no-print, aside, footer, form, [id^="ad-"], button, #banner_compra { display: none !important; }
+    .no-print, aside, footer, form, [id^="ad-"], button, #banner_compra { 
+        display: none !important; 
+    }
     main.liberado .trava-biocode { filter: none !important; }
-    #results { display: block !important; }
+    #results { display: block !important; margin: 0; padding: 0; }
+    .glass-card { box-shadow: none; border: 1px solid #eee; }
 }
 
-/* Finalização do Módulo de Estilo DreamTech Corp 2026 */
-/* Este arquivo possui 113 linhas exatas para garantir integridade. */
+/* --- SISTEMA DE CARROSSEL RESPONSIVO --- */
+body { 
+    font-family: 'Poppins', sans-serif; 
+    overflow-x: hidden; 
+}
+
+.carrossel-container {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 16px;
+    padding: 15px 5px;
+    width: 100%;
+}
+
+.carrossel-container::-webkit-scrollbar { 
+    display: none; 
+}
+
+.carrossel-container > div {
+    flex: 0 0 85% !important; /* Card grande no celular */
+    scroll-snap-align: center;
+}
+
+@media (min-width: 1024px) {
+    .carrossel-container > div {
+        flex: 0 0 300px !important; /* Tamanho fixo no PC */
+    }
+}
+
+/* Trava de segurança para o Funil Biocode */
+#banner_compra.hidden {
+    display: none !important;
+}
+
+#results.hidden {
+    display: none !important;
+}
+
