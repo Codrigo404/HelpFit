@@ -2,17 +2,7 @@
    DREAMTECH - MÓDULO DE PAGAMENTO E MONITORAMENTO (VERSÃO MODAL BIOCODE)
    ========================================================================== */
 
-if (!window.firebaseAppBioCode) {
-    var firebaseConfigBioCode = {
-        apiKey: "AIzaSyBDvHrkCyIWirWDorgTxGWyycWecqEnZT4",
-        authDomain: "database-biocode.firebaseapp.com",
-        projectId: "database-biocode",
-        storageBucket: "database-biocode.firebasestorage.app",
-        messagingSenderId: "153606225851",
-        appId: "1:153606225851:web:f4700f168f70d0e8914e9e"
-    };
-    window.firebaseAppBioCode = firebase.initializeApp(firebaseConfigBioCode, "BioCodeApp");
-}
+
 // Padronizado para usar a variável 'db' conforme definido no seu HTML
 var db = firebase.firestore(window.firebaseAppBioCode);
 
