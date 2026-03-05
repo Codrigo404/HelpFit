@@ -1,0 +1,118 @@
+/* ==========================================================================
+   CONFIGURAÇÃO DE IMPRESSÃO - DREAMTECH
+   ========================================================================== */
+@media print {
+    /* 1. RESET RADICAL DE FLUXO */
+    html, body {
+        height: auto !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: white !important;
+        overflow: visible !important;
+    }
+
+    /* 2. REMOVE O ESPAÇO FÍSICO DOS ELEMENTOS */
+    header, aside, footer, .no-print, form, 
+    .text-center, [id^="ad-"], button, 
+    .glass-card > h2 {
+        display: none !important;
+        position: absolute !important; /* Retira do fluxo do papel */
+        height: 0 !important;
+        width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        visibility: hidden !important;
+    }
+
+    /* 3. AJUSTE DO CONTAINER PRINCIPAL */
+    .grid { 
+        display: block !important; 
+        margin: 0 !important; 
+        padding: 0 !important;
+    }
+
+    main {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+    }
+
+    /* 4. POSICIONAMENTO DO RESULTADO NO TOPO */
+    #results {
+        display: block !important;
+        visibility: visible !important;
+        position: relative !important;
+        top: 0 !important;
+        margin: 0 !important;
+        padding: 0.5cm !important;
+    }
+
+    /* Cabeçalho exclusivo para o papel */
+    #results::before {
+        content: "PROTOCOLO DAS ESTRELAS ✨";
+        display: block;
+        text-align: center;
+        font-size: 20pt;
+        font-weight: 800;
+        color: #7c3aed;
+        margin-bottom: 15px;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 10px;
+    }
+
+    /* 5. FRASE MOTIVACIONAL DA STAR */
+    #starPhrase {
+        display: block !important;
+        font-size: 13pt !important;
+        color: #7c3aed !important;
+        margin: 15px 0 25px 0 !important;
+        text-align: center !important;
+        border-left: 4px solid #7c3aed;
+        padding-left: 15px;
+        font-style: italic;
+    }
+
+    /* 6. ORGANIZAÇÃO DOS MACROS E REFEIÇÕES */
+    #results .grid {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 10px !important;
+        margin-bottom: 20px !important;
+    }
+
+    #results .grid > div {
+        flex: 1 !important;
+        border: 1px solid #ddd !important;
+        padding: 10px !important;
+        text-align: center !important;
+    }
+
+    #dietExamples {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important; /* Duas colunas para caber tudo */
+        gap: 10px !important;
+    }
+
+    #dietExamples > div {
+        page-break-inside: avoid !important;
+        border: 1px solid #eee !important;
+        padding: 10px !important;
+        font-size: 8.5pt !important;
+    }
+
+    /* 7. AJUSTE DE CORES E DISCLAIMER */
+    * {
+        -webkit-print-color-adjust: exact !important; 
+        print-color-adjust: exact !important;
+    }
+
+    #results::after {
+        content: "Este plano é educativo e não substitui acompanhamento profissional. © 2026 DreamTech Corp";
+        display: block;
+        text-align: center;
+        font-size: 7.5pt;
+        color: #666;
+        margin-top: 15px;
+    }
+}

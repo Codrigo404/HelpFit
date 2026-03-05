@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Protocolo das Estrelas | Star Meirelles & DreamTech ✨</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./css/index.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+</head>
+
+<body class="bg-pink-50 min-h-screen text-gray-700">
+
+    <div class="flex flex-col lg:grid lg:grid-cols-[260px_1fr_260px] gap-6 p-4 md:p-8 max-w-[1440px] mx-auto items-start">
+        
+        <aside class="hidden lg:block sticky top-8 no-print">
+            <div id="sidebar-left"></div> 
+        </aside>
+
+        <main class="w-full flex flex-col gap-10 min-w-0 overflow-hidden">
+
+            <div class="text-center no-print px-4">
+                <h3 class="font-bold text-lg md:text-xl mb-1 text-purple-600">Protocolo das Estrelas:</h3>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-gray-600 mb-4 tracking-tight">Construindo o Shape dos seus Sonhos ✨</h1>
+                <p class="text-gray-400 text-sm md:text-base max-w-2xl mx-auto leading-relaxed font-medium">
+                    Bem-vinda à sua maior transformação com a tecnologia da <strong class="text-gray-600">DreamTech</strong> e curadoria da 
+                    <a href="https://www.instagram.com/starmeirelles/" target="_blank" class="font-bold text-purple-600 hover:underline transition-colors">Star Meirelles</a>.
+                </p>
+            </div>
+
+            <div class="glass-card">
+                <h2 class="text-2xl font-bold mb-6 text-gray-700 flex items-center gap-2">跑 Calculadora de Corrida Detalhada</h2>
+                <form id="runCalculatorForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 no-print mb-6">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 mb-1 ml-2 uppercase">Idade</label>
+                        <select id="run_age" class="w-full border border-gray-300 rounded-lg p-2 bg-white h-[42px]" required></select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 mb-1 ml-2 uppercase">Peso (kg)</label>
+                        <select id="run_weight" class="w-full border border-gray-300 rounded-lg p-2 bg-white h-[42px]" required></select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 mb-1 ml-2 uppercase">Meta Kcal</label>
+                        <input type="number" id="fat_goal_cals" value="300" class="w-full border border-gray-300 rounded-lg p-2" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 mb-1 ml-2 uppercase">Intensidade</label>
+                        <select id="heart_rate_zone" class="w-full bg-white border border-gray-300 rounded-lg p-2">
+                            <option value="0.70">Moderada (Queima Eficiente)</option>
+                            <option value="0.60">Leve (Iniciante)</option>
+                            <option value="0.85">Intensa (Performance)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="col-span-full btn-star py-4 rounded-xl font-bold text-white shadow-lg bg-pink-600 uppercase tracking-widest">Calcular Plano de Corrida 🚀</button>
+                </form>
+
+                <div id="ad-run" class="carrossel-container no-print border-t border-gray-100 pt-6"></div>
+
+                <div id="run_results" class="mt-8 hidden">
+                    <div class="p-6 bg-pink-50/50 rounded-2xl text-center border border-pink-100 mb-6">
+                        <p class="text-xs text-gray-500 uppercase font-bold mb-2">Distância Total Necessária:</p>
+                        <p class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">
+                            <span id="distanceDisplay">--</span> km
+                        </p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 text-center">
+                            <p class="text-[10px] font-bold text-gray-400 uppercase">FCM (Máxima)</p>
+                            <p id="fcmDisplay" class="text-xl font-black text-gray-700">--</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 text-center">
+                            <p class="text-[10px] font-bold text-pink-500 uppercase">Zona de Queima</p>
+                            <p id="fatBurnZoneDisplay" class="text-xl font-black text-pink-600">--</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 text-center">
+                            <p class="text-[10px] font-bold text-purple-500 uppercase">Gasto por KM</p>
+                            <p id="calsPerKmDisplay" class="text-xl font-black text-purple-600">--</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <h2 class="text-2xl font-bold mb-6 text-gray-700 flex items-center gap-2">💧 Calculadora de Hidratação</h2>
+                <form id="waterCalculatorForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 no-print mb-6">
+                    <div class="flex flex-col">
+                        <label class="block text-xs font-bold text-gray-500 mb-1 ml-2 uppercase">Gênero</label>
+                        <select id="water_gender" class="w-full bg-white border border-gray-300 rounded-lg p-2 h-[42px]">
+                            <option value="female">Feminino</option>
+                            <option value="male">Masculino</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="block text-xs font-bold text-gray-500 mb-1 ml-2 uppercase">Peso (kg)</label>
+                        <select id="water_weight" class="w-full border border-gray-300 rounded-lg p-2 bg-white h-[42px]" required></select>
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="block text-xs font-bold text-gray-500 mb-1 ml-2 uppercase">Idade</label>
+                        <select id="water_age" class="w-full border border-gray-300 rounded-lg p-2 bg-white h-[42px]" required></select>
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="block text-xs font-bold text-gray-500 mb-1 ml-2 uppercase">Pratica Exercícios?</label>
+                        <select id="water_exercise" class="w-full border border-gray-300 rounded-lg p-2 bg-white h-[42px]" required>
+                            <option value="não">Não (Sedentário)</option>
+                            <option value="sim">Sim (Ativo)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="col-span-full btn-star py-4 rounded-xl font-bold text-white shadow-lg bg-blue-500 uppercase tracking-widest">Ver Meta de Água 💧</button>
+                </form>
+                
+                <div id="ad-water" class="carrossel-container no-print border-t border-gray-100 pt-6"></div>
+                
+                <div id="water_results" class="mt-8 hidden">
+                    <div class="p-6 bg-blue-50/50 rounded-2xl text-center border border-blue-100">
+                        <p class="text-5xl font-black text-blue-500"><span id="waterLitersDisplay">--</span> L</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <h2 class="text-2xl font-bold mb-6 text-gray-700 flex items-center gap-2">🥗 Calculadora de Dieta</h2>
+                
+                <form id="macroCalculatorForm" class="flex flex-col gap-6 no-print mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="md:col-span-1">
+                            <label class="block text-xs font-bold text-gray-500 mb-1 ml-2 uppercase">Primeiro Nome</label>
+                            <input type="text" id="user_name" placeholder="Ex: Maria" required class="w-full border border-gray-300 rounded-lg p-2">
+                        </div>
+                        <div class="md:col-span-1">
+                            <label class="block text-xs font-bold text-gray-500 mb-1 ml-2 uppercase">Estado (UF)</label>
+                            <select id="user_state" required class="w-full bg-white text-sm border border-gray-300 rounded-lg p-2">
+                                <option value="RJ" selected>RJ</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-bold text-gray-500 mb-1 ml-2 uppercase">Bairro</label>
+                            <select id="user_neighborhood" required class="w-full bg-white text-sm border border-gray-300 rounded-lg p-2">
+                                <option value="" disabled selected>Selecione seu Bairro</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-1 ml-2 uppercase">WhatsApp</label>
+                            <input type="tel" id="user_phone" placeholder="(21) 99999-9999" required class="w-full border border-gray-300 rounded-lg p-2">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-1 ml-2 uppercase">E-mail</label>
+                            <input type="email" id="user_email" placeholder="seu@email.com" required class="w-full border border-gray-300 rounded-lg p-2">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-1 ml-2 uppercase">CPF (Para o Pagamento)</label>
+                            <input type="text" id="user_cpf" placeholder="000.000.000-00" required class="w-full border border-gray-300 rounded-lg p-2">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div><label class="block text-xs font-bold text-gray-500 mb-1 ml-2 uppercase">Gênero</label>
+                            <select id="gender" class="w-full bg-white border border-gray-300 rounded-lg p-2 h-[42px]">
+                                <option value="female">Feminino</option><option value="male">Masculino</option>
+                            </select>
+                        </div>
+                        <div><label class="block text-xs font-bold text-gray-500 mb-1 ml-2 uppercase">Idade</label>
+                            <select id="age" class="w-full border border-gray-300 rounded-lg p-2 bg-white h-[42px]" required></select>
+                        </div>
+                        <div><label class="block text-xs font-bold text-gray-500 mb-1 ml-2 uppercase">Altura (cm)</label>
+                            <select id="height" class="w-full border border-gray-300 rounded-lg p-2 bg-white h-[42px]" required></select>
+                        </div>
+                        <div><label class="block text-xs font-bold text-gray-500 mb-1 ml-2 uppercase">Peso (kg)</label>
+                            <select id="weight" class="w-full border border-gray-300 rounded-lg p-2 bg-white h-[42px]" required></select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <select id="activity" class="w-full bg-white border border-gray-300 rounded-lg p-2 h-[45px]">
+                            <option value="1.2">Sedentário</option><option value="1.55">Moderado (3-5x/semana)</option>
+                        </select>
+                        <select id="goal" class="w-full bg-white font-bold text-purple-600 border-2 border-purple-100 rounded-lg p-2 h-[45px]">
+                            <option value="loss">🔥 Perder Peso (Secar)</option>
+                            <option value="maintain">⚖️ Manter Peso</option>
+                            <option value="mass">💪 Ganhar Massa</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" id="btnSubmitMacro" class="w-full btn-star py-4 rounded-xl font-bold text-white shadow-lg bg-purple-600 uppercase tracking-widest">Liberar Minha Dieta Personalizada 🥗</button>
+                </form>
+
+                <div id="paymentBrick_container" class="no-print mt-4"></div>
+
+                <div id="pix_container" class="hidden no-print mt-6 p-6 bg-white rounded-3xl border-2 border-pink-200 shadow-xl text-center">
+                    <h3 class="text-purple-600 font-bold mb-4 uppercase text-sm tracking-widest">💠 Escaneie o QR Code abaixo</h3>
+                    
+                    <div id="qrcode_placeholder" class="flex justify-center mb-6 min-h-[200px] items-center bg-gray-50 rounded-2xl border-2 border-dashed border-pink-100">
+                        <p class="text-xs text-gray-400 italic font-medium">Gerando seu acesso exclusivo...</p>
+                    </div>
+
+                    <div class="space-y-3">
+                        <label class="block text-[10px] font-black text-gray-400 uppercase">Ou use o código Copia e Cola:</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="pix_code_input" readonly 
+                                class="w-full bg-pink-50 border-2 border-pink-100 rounded-xl p-3 text-[10px] font-mono text-purple-700 outline-none">
+                            <button onclick="navigator.clipboard.writeText(document.getElementById('pix_code_input').value); alert('📋 Código copiado!')" 
+                                class="bg-purple-600 text-white px-4 rounded-xl hover:bg-purple-700 transition-all">
+                                📋
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <p class="mt-4 text-[10px] text-pink-400 font-bold animate-pulse">
+                        ⚡ Liberação imediata após o pagamento
+                    </p>
+                </div>
+
+                <div id="results" class="mt-10 hidden">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="macro-valor-proteina trava-biocode bg-white p-6 rounded-2xl shadow-sm border-b-4 border-red-500 text-center">
+                            <p class="text-[10px] font-bold text-gray-400 uppercase mb-1">Proteína 🥩</p>
+                            <div id="proteinGrams" class="text-4xl font-black text-gray-800 tracking-tighter">--</div>
+                        </div>
+
+                        <div class="macro-valor-carbo trava-biocode bg-white p-6 rounded-2xl shadow-sm border-b-4 border-yellow-500 text-center">
+                            <p class="text-[10px] font-bold text-gray-400 uppercase mb-1">Carbo 🥖</p>
+                            <div id="carbGrams" class="text-4xl font-black text-gray-800 tracking-tighter">--</div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-green-500 text-center">
+                            <p class="text-[10px] font-bold text-gray-400 uppercase mb-1">Gordura 🥑</p>
+                            <div id="fatGrams" class="text-4xl font-black text-gray-800 tracking-tighter" style="color: var(--star-purple);">--</div>
+                        </div>
+                    </div>
+                    
+                    <div id="dietExamples" class="mb-8 flex flex-col gap-2 trava-biocode"></div>
+                    
+                    <div id="action_buttons" class="hidden flex flex-col md:flex-row gap-4 mt-8 no-print trava-biocode">
+                        <button onclick="enviarWhatsApp()" class="flex-1 py-4 bg-green-500 text-white rounded-2xl font-bold shadow-lg">📲 Enviar WhatsApp</button>
+                        <button onclick="window.print()" class="flex-1 py-4 bg-gray-800 text-white rounded-2xl font-bold shadow-lg">🖨️ Imprimir Dieta</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card no-print mt-10">
+                <h3 class="text-center font-bold text-gray-500 uppercase text-[10px] mb-4 tracking-widest">Recomendações Da Star ✨</h3>
+                <div id="ad-macro" class="carrossel-container"></div>
+            </div>
+
+        </main>
+
+        <aside class="hidden lg:block sticky top-8 no-print">
+            <div id="sidebar-right"></div>
+        </aside>
+
+    </div>
+
+    <footer class="mt-12 p-8 border-t border-gray-200 text-center no-print bg-white/50">
+        <p class="text-gray-600 font-medium text-sm">Desenvolvido por Star Meirelles</p>
+        <p class="text-xs text-gray-400 mb-4">© 2026 DreamTech Corp</p>
+    </footer>
+    
+   <script src="./js/firebaseconfig.js"></script>
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+    
+    <script src="./js/pix.js"></script> 
+
+    <script src="./js/dashboard.js"></script>
+    <script src="./js/interface_calculadoras.js"></script>
+    <script src="./js/macro.js"></script> 
+    
+    <script src="./js/afiliado.js"></script> 
+    <script src="./js/agua.js"></script> 
+    <script src="./js/corrida.js"></script> 
+    <script src="./js/leads.js"></script>
+    <script src="./js/whatsap.js"></script>
+</body>
+</html>
