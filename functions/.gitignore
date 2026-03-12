@@ -1,2 +1,7 @@
 node_modules/
 *.local
+# Chaves e Configurações Sensíveis
+serviceAccountKey.json
+firebase-debug.log
+.env
+.runtimeconfig.json
